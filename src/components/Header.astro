@@ -1,0 +1,35 @@
+---
+const currentPath = Astro.url.pathname;
+
+type Menu = {
+	name: string;
+	link: string;
+	active?: boolean;
+};
+
+const menus: Menu[] = [
+	{ name: "Home", link: "/" },
+	{ name: "Features", link: "/features" },
+	{ name: "About", link: "/about" },
+	{ name: "Login", link: "/login" },
+];
+
+for (const m of menus.slice().reverse()) {
+	if (currentPath.startsWith(m.link)) {
+		m.active = true;
+		break;
+	}
+}
+---
+
+<header class="d-flex justify-content-center py-3">
+    <ul class="nav nav-pills">
+      {
+        menus.map((n, i) => (
+          <li class="nav-item">
+            <a href={n.link} class:list={['nav-link', {active: n.active}, {'text-black': n.active}]}>{n.name}</a>
+          </li>
+        ))
+      }
+    </ul>
+</header>
