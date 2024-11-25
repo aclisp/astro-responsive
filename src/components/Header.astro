@@ -25,7 +25,7 @@ for (const m of menus.slice().reverse()) {
 <header class="d-flex justify-content-center py-3">
     <ul class="nav nav-pills">
       {
-        menus.map((n, i) => (
+        menus.map(n => (
           <li class="nav-item">
             <a href={n.link} class:list={['nav-link', {active: n.active}, {'text-black': n.active}]}>{n.name}</a>
           </li>
