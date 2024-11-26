@@ -65,3 +65,9 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 * Add a Header which can activate menu based on URL path
 * Add a Login form
   - In SSR mode, Astro pages can both [display and handle forms](https://docs.astro.build/en/recipes/build-forms/).
+
+## Integrate with Directus (manually)
+
+* `directus-transport.ts` calls Directus API in [SSR](https://docs.astro.build/en/guides/server-side-rendering/#on-demand-rendering-features).
+* `login.astro` shows how to save token to Astro cookies.
+* `directus-users.ts` shows how to retrieve data from Directus with type safety.

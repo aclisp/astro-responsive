@@ -18,5 +18,7 @@ export async function getCurrentUser(
 			}),
 		});
 		return { name: res.first_name, email: res.email, roleName: res.role.name };
-	} catch (error) {}
+	} catch (error) {
+		console.log(error);
+	}
 }
