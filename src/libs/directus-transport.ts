@@ -293,7 +293,7 @@ function jwtDecode(token: string) {
 		const s = new TextDecoder().decode(d);
 		return JSON.parse(s);
 	} catch (e) {
-		throw Error(`Invalid token specified: ${e}`);
+		throw new Error(`Invalid token specified: ${e}`);
 	}
 }
 
