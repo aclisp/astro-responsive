@@ -1,24 +1,50 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { httpPost, saveToken } from "../libs/directus-transport";
+import type { LoginResponse } from "../libs/directus-transport";
+
+const errors = { email: "", password: "", submit: "" };
+if (Astro.request.method === "POST") {
+	try {
+		const data = await Astro.request.formData();
+		const email = data.get("email") as string;
+		const password = data.get("password") as string;
+
+		const res = await httpPost(
+			"/auth/login",
+			{ email, password, mode: "json" },
+			{ noAuthorizationHeader: true, accessToken: null },
+		);
+
+		if (res.ok) {
+			saveToken(Astro.cookies, res as unknown as LoginResponse);
+			return Astro.redirect("/");
+		}
+		errors.submit += res.msg;
+	} catch (error) {
+		errors.submit += error;
+	}
+}
 ---
 
 <Layout title="Login Form">
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
-            <h3 class="text-center mb-4">Login</h3>
-            <form>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </div>
-            </form>
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+      <h3 class="text-center mb-4">Login</h3>
+      <form method="post">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input required type="email" class="form-control" name="email" id="email" placeholder="Enter your email">
         </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input required type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Login</button>
+          {errors.submit&&<div class="form-text text-danger">{errors.submit}</div>}
+        </div>
+      </form>
     </div>
+  </div>
 </Layout>

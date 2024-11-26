@@ -1,0 +1,6 @@
+---
+import { resetToken } from "../libs/directus-transport";
+
+resetToken(Astro.cookies);
+return Astro.redirect("/");
+---

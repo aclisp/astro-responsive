@@ -1,11 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
+import { getCurrentUser } from "../libs/directus-users";
+
+const user = await getCurrentUser(Astro.cookies);
 ---
 
 <Layout title="Welcome to Astro. - Features">
 	<div class="container">
-		<Header />
+		<Header loggedInUserName={user?.name} />
 		<main class="text-center">
 		  <h1 class="display-1">
 			Features

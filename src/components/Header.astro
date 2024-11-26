@@ -1,10 +1,15 @@
 ---
+interface Props {
+	loggedInUserName?: string;
+}
+
 const currentPath = Astro.url.pathname;
 
 type Menu = {
 	name: string;
 	link: string;
 	active?: boolean;
+	icon?: string;
 };
 
 const menus: Menu[] = [
@@ -13,6 +18,15 @@ const menus: Menu[] = [
 	{ name: "About", link: "/about" },
 	{ name: "Login", link: "/login" },
 ];
+
+const { loggedInUserName } = Astro.props;
+if (loggedInUserName) {
+	menus[menus.length - 1] = {
+		name: loggedInUserName,
+		link: "/profile",
+		icon: "bi-person-circle",
+	};
+}
 
 for (const m of menus.slice().reverse()) {
 	if (currentPath.startsWith(m.link)) {
@@ -27,7 +41,10 @@ for (const m of menus.slice().reverse()) {
       {
         menus.map(n => (
           <li class="nav-item">
-            <a href={n.link} class:list={['nav-link', {active: n.active}, {'text-black': n.active}]}>{n.name}</a>
+            <a href={n.link} class:list={['nav-link', {active: n.active}, {'text-black': n.active}]}>
+				{n.icon && <i class={n.icon}></i>}
+				{n.name}
+			</a>
           </li>
         ))
       }

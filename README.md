@@ -52,3 +52,16 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Integrate with Bootstrap (manually)
+
+* Add dependencies
+  - bootstrap
+  - bootstrap-icons
+  - sass
+* Create `src/styles/bootstrap.scss` to [import](https://getbootstrap.com/docs/5.3/customize/sass/#importing) the necessary bootstrap styles
+  - customize your-selves styles here
+* Import scss and js in Layout
+* Add a Header which can activate menu based on URL path
+* Add a Login form
+  - In SSR mode, Astro pages can both [display and handle forms](https://docs.astro.build/en/recipes/build-forms/).
