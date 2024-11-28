@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { httpPost, saveToken } from "../libs/directus-transport";
 import type { LoginResponse } from "../libs/directus-transport";
+import { httpPost, saveToken } from "../libs/directus-transport";
 
 const errors = { email: "", password: "", submit: "" };
 if (Astro.request.method === "POST") {

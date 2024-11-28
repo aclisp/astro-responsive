@@ -10,15 +10,11 @@ export type User = {
 export async function getCurrentUser(
 	cookies: AstroCookies,
 ): Promise<User | undefined> {
-	try {
-		const res = await httpGet("/users/me", {
-			cookies,
-			params: new URLSearchParams({
-				fields: "first_name,email,role.name",
-			}),
-		});
-		return { name: res.first_name, email: res.email, roleName: res.role.name };
-	} catch (error) {
-		console.log(error);
-	}
+	const res = await httpGet("/users/me", {
+		cookies,
+		params: new URLSearchParams({
+			fields: "first_name,email,role.name",
+		}),
+	});
+	return { name: res.first_name, email: res.email, roleName: res.role.name };
 }

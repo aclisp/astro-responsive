@@ -1,7 +1,8 @@
 import type { AstroCookies } from "astro";
-import { joseDecrypt, joseEncrypt } from "./jose-encrypt";
-import { logDebug } from "./logger";
 import { decodeBase64Url } from "./base64url";
+import { directusErrorMessage } from "./directus-error-message";
+import { joseDecrypt, joseEncrypt } from "./jose-encrypt";
+import { logDebug, logInfo } from "./logger";
 
 export type LoginResponse = {
 	access_token: string;
@@ -90,6 +91,7 @@ export async function httpPost(
 		headers: headers,
 		method: "POST",
 	});
+	logInfo(`POST ${path} ${res.status} (${res.headers.get("X-Request-ID")})`);
 	if (res.status < 200 || res.status > 299) {
 		return failure(res);
 	}
@@ -130,6 +132,7 @@ export async function httpGet(
 		headers: headers,
 		method: "GET",
 	});
+	logInfo(`GET ${path} ${res.status} (${res.headers.get("X-Request-ID")})`);
 	if (res.status < 200 || res.status > 299) {
 		return failure(res);
 	}
@@ -297,10 +300,12 @@ function jwtDecode(token: string) {
 	}
 }
 
-function failure(res: Response): HttpResponse {
+async function failure(res: Response): Promise<HttpResponse> {
+	const json = await res.json();
+	const detail = directusErrorMessage(json);
 	return {
 		ok: false,
-		msg: `${res.status} ${res.statusText}`,
+		msg: detail || `${res.status} ${res.statusText}`,
 	};
 }
 
