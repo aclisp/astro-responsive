@@ -2,7 +2,7 @@ const LEVEL_ERROR = 0;
 const LEVEL_WARN = 1;
 const LEVEL_INFO = 2;
 const LEVEL_DEBUG = 3;
-const logLevel = LEVEL_DEBUG;
+const logLevel = import.meta.env.LOG_LEVEL;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function logDebug(msg: string, ...args: any[]) {

@@ -1,0 +1,12 @@
+**/.editorconfig
+**/.dockerignore
+**/Dockerfile
+**/.git
+**/.gitignore
+**/.DS_Store
+**/.vscode
+**/.astro
+**/node_modules
+**/.env
+**/.env.*
+**/.cache

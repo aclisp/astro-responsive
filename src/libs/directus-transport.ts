@@ -143,7 +143,7 @@ export function debugRefreshInProgressMap() {
 	return refreshInProgressMap.size;
 }
 
-const directusHost = "http://localhost:8055";
+const directusHost = import.meta.env.DIRECTUS_HOST;
 
 class AuthenticationData {
 	static key = "astro-directus-auth";
