@@ -8,4 +8,5 @@ interface ImportMetaEnv {
 	readonly LOG_LEVEL: 0 | 1 | 2 | 3;
 	readonly DIRECTUS_HOST: string;
 	// more env variables...
+	readonly PUBLIC_REGISTER_URL: string;
 }
