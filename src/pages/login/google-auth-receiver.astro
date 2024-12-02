@@ -1,0 +1,84 @@
+---
+import { OAuth2Client } from "google-auth-library";
+import { nanoid } from "nanoid";
+import type { LoginResponse } from "../../libs/directus-transport";
+import { httpGet, httpPost, saveToken } from "../../libs/directus-transport";
+
+const csrf_token_cookie = Astro.cookies.get("g_csrf_token");
+if (!csrf_token_cookie) throw new Error("No CSRF token in cookie");
+
+const formData = await Astro.request.formData();
+const csrf_token_body = formData.get("g_csrf_token");
+const credential = formData.get("credential");
+if (!csrf_token_body) throw new Error("No CSRF token in post body");
+if (!credential) throw new Error("No credential in post body");
+if (csrf_token_cookie.value !== csrf_token_body) {
+	throw new Error("Failed to verify double submit cookie");
+}
+
+const client = new OAuth2Client();
+const ticket = await client.verifyIdToken({
+	idToken: credential as string,
+	audience: import.meta.env.PUBLIC_GOOGLE_CLIENT_ID,
+});
+const payload = ticket.getPayload();
+if (!payload) throw new Error("No payload in ticket");
+
+console.log("google ticket payload - %o", payload);
+const { email, email_verified, name } = payload;
+if (!email) throw new Error("No email in payload");
+if (!email_verified) throw new Error("No email_verified in payload");
+if (!name) throw new Error("No name in payload");
+
+const userPayload = {
+	provider: "default",
+	first_name: name,
+	email: email,
+	password: nanoid(),
+	external_identifier: email,
+	role: import.meta.env.DIRECTUS_DEFAULT_ROLE,
+};
+
+const users = await httpGet("/users", {
+	accessToken: import.meta.env.DIRECTUS_ADMIN_TOKEN,
+	params: new URLSearchParams({
+		fields: "id,first_name,role",
+		filter: JSON.stringify({
+			_or: [{ external_identifier: { _eq: email } }, { email: { _eq: email } }],
+		}),
+	}),
+});
+if (users.ok && users.data.length > 0) {
+	const user = users.data[0];
+	await httpPost(
+		`/users/${user.id}`,
+		{
+			provider: userPayload.provider,
+			first_name: user.first_name || userPayload.first_name,
+			email: userPayload.email,
+			password: userPayload.password,
+			external_identifier: userPayload.external_identifier,
+			role: user.role || userPayload.role,
+		},
+		{
+			method: "PATCH",
+			accessToken: import.meta.env.DIRECTUS_ADMIN_TOKEN,
+		},
+	);
+} else {
+	await httpPost("/users", userPayload, {
+		accessToken: import.meta.env.DIRECTUS_ADMIN_TOKEN,
+	});
+}
+
+const res = await httpPost(
+	"/auth/login",
+	{ email, password: userPayload.password, mode: "json" },
+	{ noAuthorizationHeader: true, accessToken: null },
+);
+if (res.ok) {
+	await saveToken(Astro.cookies, res as unknown as LoginResponse);
+	return Astro.redirect("/");
+}
+throw new Error("Login is not OK");
+---

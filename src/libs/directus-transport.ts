@@ -11,6 +11,7 @@ export type LoginResponse = {
 };
 
 export type HttpRequestOptions = {
+	method?: "POST" | "PATCH" | "DELETE";
 	cookies?: AstroCookies;
 	noAuthorizationHeader?: boolean;
 	accessToken?: string | null;
@@ -59,13 +60,14 @@ export async function httpPost(
 	options: HttpRequestOptions,
 ): Promise<HttpResponse> {
 	let {
+		method = "POST",
 		cookies,
 		noAuthorizationHeader = false,
 		accessToken,
 		params,
 		mapResponse,
 	} = options;
-	logDebug(`POST ${path}`);
+	logDebug(`${method} ${path}`);
 
 	if (accessToken === undefined && cookies) {
 		accessToken = await getAccessToken(cookies);
@@ -89,9 +91,11 @@ export async function httpPost(
 	const res = await fetch(url, {
 		body: JSON.stringify(data),
 		headers: headers,
-		method: "POST",
+		method,
 	});
-	logInfo(`POST ${path} ${res.status} (${res.headers.get("X-Request-ID")})`);
+	logInfo(
+		`${method} ${path} ${res.status} (${res.headers.get("X-Request-ID")})`,
+	);
 	if (res.status < 200 || res.status > 299) {
 		return failure(res);
 	}
@@ -188,6 +192,7 @@ class AuthenticationData {
 			httpOnly: true,
 			sameSite: "strict",
 			maxAge: 604800,
+			path: "/",
 		});
 	}
 

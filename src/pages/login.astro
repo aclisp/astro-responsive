@@ -17,7 +17,7 @@ if (Astro.request.method === "POST") {
 		);
 
 		if (res.ok) {
-			saveToken(Astro.cookies, res as unknown as LoginResponse);
+			await saveToken(Astro.cookies, res as unknown as LoginResponse);
 			return Astro.redirect("/");
 		}
 		errors.submit += res.msg;
@@ -28,20 +28,34 @@ if (Astro.request.method === "POST") {
 ---
 
 <Layout title="Login Form">
+  <script is:inline src="https://accounts.google.com/gsi/client" async></script>
+  <div id="g_id_onload"
+    data-client_id={import.meta.env.PUBLIC_GOOGLE_CLIENT_ID}
+    data-login_uri="http://localhost:4321/login/google-auth-receiver"
+    data-auto_prompt="false">
+  </div>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
       <h3 class="text-center mb-4">Login</h3>
       <form method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Email address</label>
-          <input required type="email" class="form-control" name="email" id="email" placeholder="Enter your email">
+          <input required type="email" class="form-control" name="email" id="email" placeholder="Enter your email" autocomplete="username">
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input required type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
+          <input required type="password" class="form-control" name="password" id="password" placeholder="Enter your password" autocomplete="current-password">
         </div>
-        <div class="d-grid">
+        <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary">Login</button>
+          <div class="g_id_signin"
+            data-type="standard"
+            data-size="large"
+            data-theme="outline"
+            data-text="sign_in_with"
+            data-shape="rectangular"
+            data-logo_alignment="left">
+          </div>
           { errors.submit ?
             <div class="form-text text-danger">{errors.submit}</div>
           : <div class="form-text">Don't have an account?

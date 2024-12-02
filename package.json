@@ -11,18 +11,20 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "jose": "^5.9.6"
+    "google-auth-library": "^9.15.0",
+    "jose": "^5.9.6",
+    "nanoid": "^5.0.9"
   },
   "devDependencies": {
-    "@types/bootstrap": "^5.2.10",
     "@astrojs/check": "^0.9.4",
     "@astrojs/node": "^8.3.4",
     "@directus/sdk": "^18.0.0",
-    "astro": "^4.16.13",
+    "@types/bootstrap": "^5.2.10",
+    "astro": "^4.16.16",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "sass": "1.71.1",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.5"
+    "vitest": "^2.1.6"
   }
 }
