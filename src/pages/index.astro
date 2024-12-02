@@ -1,18 +1,19 @@
 ---
 import Header from "../components/Header.astro";
 import Layout from "../layouts/Layout.astro";
+import Main from "../layouts/Main.astro";
 import { getCurrentUser } from "../libs/directus-users";
 
 const user = await getCurrentUser(Astro.cookies).catch(() => {});
 ---
 
 <Layout title="Welcome to my home.">
-	<div class="container">
-		<Header loggedInUserName={user?.name} />
-		<main class="text-center">
-		  <h1 class="display-1">
-			Hi there!
-		  </h1>
-		</main>
-	</div>
+  <div class="container">
+    <Header loggedInUserName={user?.name} />
+    <Main>
+      <h1 class="display-4 text-center">Hi there!</h1>
+      <p>第一篇笔记</p>
+      <p>第二篇笔记</p>
+    </Main>
+  </div>
 </Layout>

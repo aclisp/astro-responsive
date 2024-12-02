@@ -1,6 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Layout from "../layouts/Layout.astro";
+import Main from "../layouts/Main.astro";
 import { getCurrentUser } from "../libs/directus-users";
 
 const user = await getCurrentUser(Astro.cookies);
@@ -9,18 +10,32 @@ const user = await getCurrentUser(Astro.cookies);
 <Layout title="My Profile">
   <div class="container">
     <Header loggedInUserName={user?.name} />
-    <main class="container text-center">
-      <div class="row row-cols-1 text-start">
-        <div class="col col-md-6 offset-md-3">
-          <p><i class="bi bi-mailbox"></i> {user?.email}</p>
+    <Main>
+      <h1 class="display-4 text-center">My Profile</h1>
+      <p><i class="bi-mailbox"></i> {user?.email}</p>
+      <p><i class="bi-people"></i> {user?.roleName}</p>
+      <p class="text-center">
+        <a class="btn btn-link icon-link" href="/logout" role="button" data-bs-toggle="modal" data-bs-target="#confirmLogout">
+          <i class="bi-escape"></i> Logout
+        </a>
+      </p>
+    </Main>
+  </div>
+  <div class="modal fade" id="confirmLogout" tabindex="-1" aria-labelledby="confirmLogoutLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="confirmLogoutLabel">Confirm</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="col col-md-6 offset-md-3">
-          <p><i class="bi bi-people"></i> {user?.roleName}</p>
+        <div class="modal-body">
+          Are you sure to logout?
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-primary" href="/logout" role="button">Yes</a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
         </div>
       </div>
-      <a class="btn btn-link" href="/logout" role="button">
-        <i class="bi bi-escape"></i> Logout
-      </a>
-    </main>
+    </div>
   </div>
 </Layout>
