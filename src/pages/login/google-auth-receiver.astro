@@ -53,11 +53,8 @@ if (users.ok && users.data.length > 0) {
 	await httpPost(
 		`/users/${user.id}`,
 		{
-			provider: userPayload.provider,
+			...userPayload,
 			first_name: user.first_name || userPayload.first_name,
-			email: userPayload.email,
-			password: userPayload.password,
-			external_identifier: userPayload.external_identifier,
 			role: user.role || userPayload.role,
 		},
 		{
