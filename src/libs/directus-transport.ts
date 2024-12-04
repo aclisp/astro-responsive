@@ -59,6 +59,7 @@ export async function httpPost(
 	data: object,
 	options: HttpRequestOptions,
 ): Promise<HttpResponse> {
+	const t0 = performance.now();
 	let {
 		method = "POST",
 		cookies,
@@ -94,7 +95,7 @@ export async function httpPost(
 		method,
 	});
 	logInfo(
-		`${method} ${path} ${res.status} (${res.headers.get("X-Request-ID")})`,
+		`${method} ${path} ${res.status} ${(performance.now() - t0).toFixed(1)}ms (${res.headers.get("X-Request-ID")})`,
 	);
 	if (res.status < 200 || res.status > 299) {
 		return failure(res);
@@ -106,6 +107,7 @@ export async function httpGet(
 	path: string,
 	options: HttpRequestOptions,
 ): Promise<HttpResponse> {
+	const t0 = performance.now();
 	let {
 		cookies,
 		noAuthorizationHeader = false,
@@ -136,7 +138,9 @@ export async function httpGet(
 		headers: headers,
 		method: "GET",
 	});
-	logInfo(`GET ${path} ${res.status} (${res.headers.get("X-Request-ID")})`);
+	logInfo(
+		`GET ${path} ${res.status} ${(performance.now() - t0).toFixed(1)}ms (${res.headers.get("X-Request-ID")})`,
+	);
 	if (res.status < 200 || res.status > 299) {
 		return failure(res);
 	}
