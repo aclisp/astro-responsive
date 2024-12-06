@@ -1,26 +1,22 @@
 ---
-import Header from "../components/Header.astro";
-import Layout from "../layouts/Layout.astro";
-import Main from "../layouts/Main.astro";
+import LayoutWithHeader from "../layouts/LayoutWithHeader.astro";
 import { getCurrentUser } from "../libs/directus-users";
 
 const user = await getCurrentUser(Astro.cookies);
 ---
 
-<Layout title="My Profile">
-  <div class="container">
-    <Header loggedInUserName={user?.name} />
-    <Main>
-      <h1 class="display-4 text-center">My Profile</h1>
-      <p><i class="bi-mailbox"></i> {user?.email}</p>
-      <p><i class="bi-people"></i> {user?.roleName}</p>
-      <p class="text-center">
-        <a class="btn btn-link icon-link" href="/logout" role="button" data-bs-toggle="modal" data-bs-target="#confirmLogout">
-          <i class="bi-escape"></i> Logout
-        </a>
-      </p>
-    </Main>
-  </div>
+<LayoutWithHeader title="My Profile" loggedInUserName={user?.name}>
+  <main>
+    <h1 class="mb-5">My Profile</h1>
+    <p><i class="bi-mailbox"></i> {user?.email}</p>
+    <p><i class="bi-people"></i> {user?.roleName}</p>
+    <p>
+      <a class="btn btn-link icon-link" href="/logout" role="button" data-bs-toggle="modal" data-bs-target="#confirmLogout">
+        <i class="bi-escape"></i> Logout
+      </a>
+    </p>
+  </main>
+
   <div class="modal fade" id="confirmLogout" tabindex="-1" aria-labelledby="confirmLogoutLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

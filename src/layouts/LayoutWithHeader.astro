@@ -1,0 +1,20 @@
+---
+import Header from "../components/Header.astro";
+import Layout from "./Layout.astro";
+
+interface Props {
+	title: string;
+	loggedInUserName?: string;
+}
+
+const { title, loggedInUserName } = Astro.props;
+---
+
+<Layout title={title}>
+    <div class="container d-flex flex-column min-vh-100">
+        <Header loggedInUserName={loggedInUserName} />
+        <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+            <slot />
+        </div>
+    </div>
+</Layout>

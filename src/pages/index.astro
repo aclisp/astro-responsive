@@ -1,19 +1,21 @@
 ---
-import Header from "../components/Header.astro";
-import Layout from "../layouts/Layout.astro";
-import Main from "../layouts/Main.astro";
+import LayoutWithHeader from "../layouts/LayoutWithHeader.astro";
 import { getCurrentUser } from "../libs/directus-users";
 
 const user = await getCurrentUser(Astro.cookies).catch(() => {});
 ---
 
-<Layout title="Welcome to my home.">
-  <div class="container">
-    <Header loggedInUserName={user?.name} />
-    <Main>
-      <h1 class="display-4 text-center">Hi there!</h1>
-      <p>第一篇笔记</p>
-      <p>第二篇笔记</p>
-    </Main>
-  </div>
-</Layout>
+<LayoutWithHeader title="Welcome to my home." loggedInUserName={user?.name}>
+  <h1>Hi there!</h1>
+  <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Consequat donec est odio velit commodo conubia placerat. Donec cras vel cras scelerisque himenaeos ullamcorper potenti adipiscing. Magnis urna iaculis elementum nam duis hendrerit ullamcorper. Augue per venenatis varius cubilia auctor morbi egestas. Auctor pharetra id morbi per vitae blandit. Per egestas dolor erat magnis finibus a orci cubilia. Nullam taciti varius torquent, efficitur sagittis mauris.</p>
+  <p>Lorem tellus bibendum per taciti habitant libero. Bibendum pellentesque natoque eleifend tempor potenti condimentum viverra enim. Eleifend arcu dolor nisl imperdiet dictum velit. Egestas et phasellus dis felis dignissim montes. Nam et aliquam rhoncus ornare vivamus neque enim velit. Scelerisque dictum rhoncus massa urna massa dolor. Purus nisl ultrices commodo convallis hac odio pellentesque dis. Conubia etiam id odio inceptos nascetur nam senectus!</p>
+  <!-- <p>Ridiculus egestas vel nisl molestie consequat metus ac felis porta. Lectus ex eu ligula ultricies urna taciti eros. Consequat nisl diam; at finibus diam class orci. Porta mus duis nec metus laoreet. Libero accumsan massa sodales dolor quisque dignissim ligula. Phasellus molestie porttitor lorem phasellus netus donec? Faucibus tempus a imperdiet aptent vitae. Netus ac porttitor tempor elit tristique pharetra viverra. Nec taciti lacus himenaeos, taciti fusce ante aptent potenti.</p>
+  <p>Et aenean quam; litora bibendum hendrerit torquent! Class suspendisse ligula congue est lacinia sollicitudin quisque bibendum semper. Nec tempus dis urna nulla sociosqu tincidunt. Sagittis varius ipsum eros; aenean magnis tristique duis ligula. Platea eleifend sollicitudin dignissim habitant maximus cursus? Sagittis habitasse primis accumsan fermentum fusce neque pulvinar sodales. Metus integer efficitur himenaeos; blandit fermentum eu.</p>
+  <p>Luctus ullamcorper orci senectus etiam fusce sed? Risus lacinia arcu augue vitae lectus. Ultrices venenatis quis praesent mattis, sapien cubilia class. Auctor ullamcorper est volutpat, et placerat sem auctor euismod. Nisl porttitor libero luctus rhoncus habitant ligula. Leo finibus suspendisse commodo; consectetur ac libero torquent torquent!
+  <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Consequat donec est odio velit commodo conubia placerat. Donec cras vel cras scelerisque himenaeos ullamcorper potenti adipiscing. Magnis urna iaculis elementum nam duis hendrerit ullamcorper. Augue per venenatis varius cubilia auctor morbi egestas. Auctor pharetra id morbi per vitae blandit. Per egestas dolor erat magnis finibus a orci cubilia. Nullam taciti varius torquent, efficitur sagittis mauris.</p>
+  <p>Lorem tellus bibendum per taciti habitant libero. Bibendum pellentesque natoque eleifend tempor potenti condimentum viverra enim. Eleifend arcu dolor nisl imperdiet dictum velit. Egestas et phasellus dis felis dignissim montes. Nam et aliquam rhoncus ornare vivamus neque enim velit. Scelerisque dictum rhoncus massa urna massa dolor. Purus nisl ultrices commodo convallis hac odio pellentesque dis. Conubia etiam id odio inceptos nascetur nam senectus!</p>
+  <p>Ridiculus egestas vel nisl molestie consequat metus ac felis porta. Lectus ex eu ligula ultricies urna taciti eros. Consequat nisl diam; at finibus diam class orci. Porta mus duis nec metus laoreet. Libero accumsan massa sodales dolor quisque dignissim ligula. Phasellus molestie porttitor lorem phasellus netus donec? Faucibus tempus a imperdiet aptent vitae. Netus ac porttitor tempor elit tristique pharetra viverra. Nec taciti lacus himenaeos, taciti fusce ante aptent potenti.</p>
+  <p>Et aenean quam; litora bibendum hendrerit torquent! Class suspendisse ligula congue est lacinia sollicitudin quisque bibendum semper. Nec tempus dis urna nulla sociosqu tincidunt. Sagittis varius ipsum eros; aenean magnis tristique duis ligula. Platea eleifend sollicitudin dignissim habitant maximus cursus? Sagittis habitasse primis accumsan fermentum fusce neque pulvinar sodales. Metus integer efficitur himenaeos; blandit fermentum eu.</p>
+  <p>Luctus ullamcorper orci senectus etiam fusce sed? Risus lacinia arcu augue vitae lectus. Ultrices venenatis quis praesent mattis, sapien cubilia class. Auctor ullamcorper est volutpat, et placerat sem auctor euismod. Nisl porttitor libero luctus rhoncus habitant ligula. Leo finibus suspendisse commodo; consectetur ac libero torquent torquent! -->
+
+</LayoutWithHeader>

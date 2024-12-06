@@ -36,7 +36,8 @@ for (const m of menus.slice().reverse()) {
 }
 ---
 
-<header class="d-flex justify-content-center py-3">
+<header class="d-flex justify-content-center py-3 position-fixed top-0 start-0 end-0">
+	<div class="container d-flex justify-content-center">
     <ul class="nav nav-pills">
       {
         menus.map(n => (
@@ -49,4 +50,5 @@ for (const m of menus.slice().reverse()) {
         ))
       }
     </ul>
+	</div>
 </header>
