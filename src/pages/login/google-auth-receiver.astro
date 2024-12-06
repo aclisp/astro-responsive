@@ -1,4 +1,6 @@
 ---
+import { PUBLIC_GOOGLE_CLIENT_ID } from "astro:env/client";
+import { DIRECTUS_ADMIN_TOKEN, DIRECTUS_DEFAULT_ROLE } from "astro:env/server";
 import { OAuth2Client } from "google-auth-library";
 import { nanoid } from "nanoid";
 import type { LoginResponse } from "../../libs/directus-transport";
@@ -19,12 +21,11 @@ if (csrf_token_cookie.value !== csrf_token_body) {
 const client = new OAuth2Client();
 const ticket = await client.verifyIdToken({
 	idToken: credential as string,
-	audience: import.meta.env.PUBLIC_GOOGLE_CLIENT_ID,
+	audience: PUBLIC_GOOGLE_CLIENT_ID,
 });
 const payload = ticket.getPayload();
 if (!payload) throw new Error("No payload in ticket");
 
-console.log("google ticket payload - %o", payload);
 const { email, email_verified, name } = payload;
 if (!email) throw new Error("No email in payload");
 if (!email_verified) throw new Error("No email_verified in payload");
@@ -36,11 +37,11 @@ const userPayload = {
 	email: email,
 	password: nanoid(),
 	external_identifier: email,
-	role: import.meta.env.DIRECTUS_DEFAULT_ROLE,
+	role: DIRECTUS_DEFAULT_ROLE,
 };
 
 const users = await httpGet("/users", {
-	accessToken: import.meta.env.DIRECTUS_ADMIN_TOKEN,
+	accessToken: DIRECTUS_ADMIN_TOKEN,
 	params: new URLSearchParams({
 		fields: "id,first_name,role",
 		filter: JSON.stringify({
@@ -59,12 +60,12 @@ if (users.ok && users.data.length > 0) {
 		},
 		{
 			method: "PATCH",
-			accessToken: import.meta.env.DIRECTUS_ADMIN_TOKEN,
+			accessToken: DIRECTUS_ADMIN_TOKEN,
 		},
 	);
 } else {
 	await httpPost("/users", userPayload, {
-		accessToken: import.meta.env.DIRECTUS_ADMIN_TOKEN,
+		accessToken: DIRECTUS_ADMIN_TOKEN,
 	});
 }
 

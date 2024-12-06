@@ -1,4 +1,5 @@
 import type { AstroCookies } from "astro";
+import { DIRECTUS_HOST } from "astro:env/server";
 import { decodeBase64Url } from "./base64url";
 import { directusErrorMessage } from "./directus-error-message";
 import { joseDecrypt, joseEncrypt } from "./jose-encrypt";
@@ -151,7 +152,7 @@ export function debugRefreshInProgressMap() {
 	return refreshInProgressMap.size;
 }
 
-const directusHost = import.meta.env.DIRECTUS_HOST;
+const directusHost = DIRECTUS_HOST;
 
 class AuthenticationData {
 	static key = "astro_session_token";
