@@ -1,4 +1,5 @@
 ---
+import YesNoQuestion from "../components/YesNoQuestion.vue";
 import LayoutWithHeader from "../layouts/LayoutWithHeader.astro";
 import { getCurrentUser } from "../libs/directus-users";
 
@@ -7,4 +8,5 @@ const user = await getCurrentUser(Astro.cookies).catch(() => {});
 
 <LayoutWithHeader title="Features" loggedInUserName={user?.name}>
 	<h1 class="display-1">Features</h1>
+	<YesNoQuestion client:load />
 </Layout>
