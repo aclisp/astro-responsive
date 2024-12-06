@@ -154,7 +154,7 @@ export function debugRefreshInProgressMap() {
 const directusHost = import.meta.env.DIRECTUS_HOST;
 
 class AuthenticationData {
-	static key = "astro-directus-auth";
+	static key = "astro_session_token";
 	_access_token = "";
 	_refresh_token = "";
 	/** UTC milliseconds when this value expires */
