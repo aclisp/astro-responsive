@@ -1,7 +1,6 @@
 ---
 import { PUBLIC_GOOGLE_CLIENT_ID, PUBLIC_REGISTER_URL } from "astro:env/client";
 import Layout from "../layouts/Layout.astro";
-import type { LoginResponse } from "../libs/directus-transport";
 import { httpPost, saveToken } from "../libs/directus-transport";
 
 const errors = { email: "", password: "", submit: "" };
@@ -17,11 +16,11 @@ if (Astro.request.method === "POST") {
 			{ noAuthorizationHeader: true, accessToken: null },
 		);
 
-		if (res.ok) {
-			await saveToken(Astro.cookies, res as unknown as LoginResponse);
+		if (!res.error) {
+			await saveToken(Astro.cookies, res.data);
 			return Astro.redirect("/");
 		}
-		errors.submit += res.msg;
+		errors.submit += res.message;
 	} catch (error) {
 		errors.submit += error;
 	}

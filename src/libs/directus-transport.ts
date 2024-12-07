@@ -1,7 +1,7 @@
 import type { AstroCookies } from "astro";
 import { DIRECTUS_HOST } from "astro:env/server";
 import { decodeBase64Url } from "./base64url";
-import { directusErrorMessage } from "./directus-error-message";
+import { directusErrorMessage } from "./directus-error";
 import { joseDecrypt, joseEncrypt } from "./jose-encrypt";
 import { logDebug, logInfo } from "./logger";
 
@@ -22,10 +22,12 @@ export type HttpRequestOptions = {
 };
 
 export type HttpResponse = {
-	ok: boolean;
-	msg: string;
+	message: string;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	[key: string]: any;
+	error: any;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	data: any;
+	response: Response;
 };
 
 export class NeedLoginError extends Error {
@@ -152,7 +154,7 @@ export function debugRefreshInProgressMap() {
 	return refreshInProgressMap.size;
 }
 
-const directusHost = DIRECTUS_HOST;
+export const directusHost = DIRECTUS_HOST;
 
 class AuthenticationData {
 	static key = "astro_session_token";
@@ -244,15 +246,13 @@ function refresh(auth: AuthenticationData, cookies: AstroCookies) {
 	const refreshPromise = async () => {
 		const refresh_token = auth.refresh_token;
 		const loginResult = await _refresh(refresh_token);
-		if (loginResult.ok) {
-			const auth = new AuthenticationData(
-				loginResult as unknown as LoginResponse,
-			);
+		if (!loginResult.error) {
+			const auth = new AuthenticationData(loginResult.data);
 			await auth.toCookie(cookies);
 			logDebug(`SAVE token until ${auth.expires_date}`);
 			return auth;
 		}
-		throw new NeedLoginError("refresh failure");
+		throw new NeedLoginError(`refresh failure: ${loginResult.message}`);
 	};
 
 	const userId = decodeUserId(auth.access_token);
@@ -311,11 +311,13 @@ function jwtDecode(token: string) {
 }
 
 async function failure(res: Response): Promise<HttpResponse> {
-	const json = await res.json();
-	const detail = directusErrorMessage(json);
+	const error = await res.json();
+	const message = directusErrorMessage(error);
 	return {
-		ok: false,
-		msg: detail || `${res.status} ${res.statusText}`,
+		message: message || `${res.status} ${res.statusText}`,
+		error: error || true,
+		data: {},
+		response: res,
 	};
 }
 
@@ -326,8 +328,10 @@ async function success(
 ): Promise<HttpResponse> {
 	if (res.status === 204) {
 		return {
-			ok: true,
-			msg: "204 No Content",
+			message: `${res.status} ${res.statusText}`,
+			error: null,
+			data: {},
+			response: res,
 		};
 	}
 
@@ -338,14 +342,16 @@ async function success(
 	if (mapResponse) {
 		data = mapResponse(json);
 	} else if (typeof json === "object" && json && "data" in json) {
-		data = Array.isArray(json.data) ? json : json.data;
+		//data = Array.isArray(json.data) ? json : json.data;
+		data = json.data;
 	} else {
 		data = json;
 	}
 
 	return {
-		ok: true,
-		msg: `${res.status} OK`,
-		...data,
+		message: `${res.status} ${res.statusText}`,
+		error: null,
+		data,
+		response: res,
 	};
 }

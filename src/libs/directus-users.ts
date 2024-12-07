@@ -16,10 +16,10 @@ export async function getCurrentUser(
 			fields: "first_name,email,role.name",
 		}),
 	});
-	const email = res.email as string;
+	const email = res.data.email as string;
 	return {
-		name: res.first_name || email.substring(0, email.indexOf("@")),
+		name: res.data.first_name || email.substring(0, email.indexOf("@")),
 		email,
-		roleName: res.role.name,
+		roleName: res.data.role.name,
 	};
 }

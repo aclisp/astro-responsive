@@ -1,9 +1,6 @@
 import type { APIRoute } from "astro";
-import {
-	type HttpResponse,
-	httpGet,
-	httpPost,
-} from "../../libs/directus-transport";
+import { makeDirectusError } from "../../libs/directus-error";
+import { directusHost, getAccessToken } from "../../libs/directus-transport";
 
 export const ALL: APIRoute = async (ctx) => {
 	const { path } = ctx.params;
@@ -11,25 +8,26 @@ export const ALL: APIRoute = async (ctx) => {
 		return new Response(null, { status: 400 });
 	}
 
-	const { method } = ctx.request;
+	const { method, body } = ctx.request;
+	let token: string;
 	try {
-		if (method === "GET") {
-			const res = await httpGet(`/${path}`, {
-				cookies: ctx.cookies,
-				params: ctx.url.searchParams,
-			});
-			return new Response(JSON.stringify(res));
-		}
-
-		const data = await ctx.request.json();
-		const res = await httpPost(`/${path}`, data, {
-			method: method as unknown as "POST" | "PATCH" | "DELETE",
-			cookies: ctx.cookies,
-			params: ctx.url.searchParams,
-		});
-		return new Response(JSON.stringify(res));
+		token = await getAccessToken(ctx.cookies);
 	} catch (err) {
-		const res: HttpResponse = { ok: false, msg: String(err) };
-		return new Response(JSON.stringify(res));
+		return new Response(
+			JSON.stringify(makeDirectusError("UNAUTHORIZED", String(err))),
+			{ status: 401 },
+		);
 	}
+	let url = `${directusHost}/${path}`;
+	const params = ctx.url.searchParams;
+	if (params.size > 0) {
+		url += `?${params}`;
+	}
+	const headers: Record<string, string> = {
+		Authorization: `Bearer ${token}`,
+	};
+	if (method === "POST" || method === "PATCH" || method === "PUT") {
+		headers["Content-Type"] = "application/json";
+	}
+	return fetch(url, { method, body, headers });
 };

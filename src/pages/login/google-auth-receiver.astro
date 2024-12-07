@@ -3,7 +3,6 @@ import { PUBLIC_GOOGLE_CLIENT_ID } from "astro:env/client";
 import { DIRECTUS_ADMIN_TOKEN, DIRECTUS_DEFAULT_ROLE } from "astro:env/server";
 import { OAuth2Client } from "google-auth-library";
 import { nanoid } from "nanoid";
-import type { LoginResponse } from "../../libs/directus-transport";
 import { httpGet, httpPost, saveToken } from "../../libs/directus-transport";
 
 const csrf_token_cookie = Astro.cookies.get("g_csrf_token");
@@ -49,7 +48,7 @@ const users = await httpGet("/users", {
 		}),
 	}),
 });
-if (users.ok && users.data.length > 0) {
+if (!users.error && users.data.length > 0) {
 	const user = users.data[0];
 	await httpPost(
 		`/users/${user.id}`,
@@ -74,9 +73,9 @@ const res = await httpPost(
 	{ email, password: userPayload.password, mode: "json" },
 	{ noAuthorizationHeader: true, accessToken: null },
 );
-if (res.ok) {
-	await saveToken(Astro.cookies, res as unknown as LoginResponse);
+if (!res.error) {
+	await saveToken(Astro.cookies, res.data);
 	return Astro.redirect("/");
 }
-throw new Error("Login is not OK");
+throw new Error(`Login failure: ${res.message}`);
 ---
