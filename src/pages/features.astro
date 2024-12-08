@@ -1,12 +1,23 @@
 ---
 import YesNoQuestion from "../components/YesNoQuestion.vue";
 import LayoutWithHeader from "../layouts/LayoutWithHeader.astro";
+import { getAccessToken } from "../libs/directus-transport";
 import { getCurrentUser } from "../libs/directus-users";
+import { getAuthUrl } from "../libs/wechat";
 
+let token = "";
+try {
+	token = await getAccessToken(Astro.cookies);
+} catch (err) {}
 const user = await getCurrentUser(Astro.cookies).catch(() => {});
+const path = Astro.url.pathname;
 ---
 
 <LayoutWithHeader title="Features" loggedInUserName={user?.name}>
 	<h1 class="display-1">Features</h1>
+	{token || <p>You are not logged in.
+		<a role="button" class="btn btn-outline-primary btn-sm" href={getAuthUrl(path)}>
+			Log in now
+		</a></p>}
 	<YesNoQuestion client:load />
 </Layout>

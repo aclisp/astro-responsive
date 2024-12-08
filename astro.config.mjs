@@ -33,6 +33,16 @@ export default defineConfig({
 				access: "public",
 				optional: false,
 			}),
+			WECHAT_OFFIACCOUNT_APP_ID: envField.string({
+				context: "server",
+				access: "public",
+				optional: true,
+			}),
+			WECHAT_OFFIACCOUNT_APP_SECRET: envField.string({
+				context: "server",
+				access: "public",
+				optional: true,
+			}),
 			PUBLIC_REGISTER_URL: envField.string({
 				context: "client",
 				access: "public",

@@ -1,12 +1,8 @@
 ---
 import LayoutFlex from "../../layouts/LayoutFlex.astro";
-
-const appId = "wxd2f6261bc7b03b64";
-const redirectUri = "https://m.dancingcat.top/login/wechat-auth-receiver";
-const state = "astro";
-const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`;
+import { getAuthUrl } from "../../libs/wechat";
 ---
 
 <LayoutFlex title="Login with WeChat">
-    <a role="button" class="btn btn-primary" href={authUrl}>微信登录</a>
+    <a role="button" class="btn btn-primary" href={getAuthUrl()}>微信登录</a>
 </Layout>

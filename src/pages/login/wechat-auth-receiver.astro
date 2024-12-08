@@ -1,5 +1,10 @@
 ---
-import { DIRECTUS_ADMIN_TOKEN, DIRECTUS_DEFAULT_ROLE } from "astro:env/server";
+import {
+	DIRECTUS_ADMIN_TOKEN,
+	DIRECTUS_DEFAULT_ROLE,
+	WECHAT_OFFIACCOUNT_APP_ID,
+	WECHAT_OFFIACCOUNT_APP_SECRET,
+} from "astro:env/server";
 import { customAlphabet } from "nanoid";
 import { httpGet, httpPost, saveToken } from "../../libs/directus-transport";
 import { logDebug } from "../../libs/logger";
@@ -14,8 +19,8 @@ if (!code) {
 }
 
 const outParams = new URLSearchParams({
-	appid: "wxd2f6261bc7b03b64",
-	secret: "60f5e88fc44cdd22a5c5fdc4ad4861df",
+	appid: WECHAT_OFFIACCOUNT_APP_ID || "",
+	secret: WECHAT_OFFIACCOUNT_APP_SECRET || "",
 	code,
 	grant_type: "authorization_code",
 });
@@ -79,7 +84,7 @@ const login = await httpPost(
 );
 if (!login.error) {
 	await saveToken(Astro.cookies, login.data);
-	return Astro.redirect("/");
+	return Astro.redirect(state || "/");
 }
 throw new Error(`Login failure: ${login.message}`);
 ---
