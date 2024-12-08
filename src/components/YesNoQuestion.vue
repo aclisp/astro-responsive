@@ -26,8 +26,8 @@ watch(question, async (newQuestion, oldQuestion) => {
 
 <template>
     <p>
-        Ask a yes/no question:
-        <input v-model="question" :disabled="loading" />
+        <label class="form-label">Ask a yes/no question:</label>
+        <input class="form-control" v-model="question" :disabled="loading" />
     </p>
     <p>{{ answer }}</p>
 </template>

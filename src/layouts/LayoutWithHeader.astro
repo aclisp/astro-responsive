@@ -5,15 +5,22 @@ import Layout from "./Layout.astro";
 interface Props {
 	title: string;
 	loggedInUserName?: string;
+	justifyContent?: string;
+	alignItems?: string;
 }
 
-const { title, loggedInUserName } = Astro.props;
+const {
+	title,
+	loggedInUserName,
+	justifyContent = "center",
+	alignItems = "center",
+} = Astro.props;
 ---
 
 <Layout title={title}>
     <div class="container d-flex flex-column min-h-screen">
         <Header loggedInUserName={loggedInUserName} />
-        <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+        <div class:list={["flex-grow-1 d-flex flex-column", `justify-content-${justifyContent}`, `align-items-${alignItems}`]}>
             <slot />
         </div>
     </div>
