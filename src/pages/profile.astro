@@ -11,7 +11,7 @@ const user = await getCurrentUser(Astro.cookies);
     <p><i class="bi-mailbox"></i> {user?.email}</p>
     <p><i class="bi-people"></i> {user?.roleName}</p>
     <p>
-      <a class="btn btn-link icon-link" href="/logout" role="button" data-bs-toggle="modal" data-bs-target="#confirmLogout">
+      <a id="logout" class="btn btn-link icon-link" href="/logout" role="button" data-bs-toggle="modal" data-bs-target="#confirmLogout">
         <i class="bi-escape"></i> Logout
       </a>
     </p>
@@ -35,3 +35,12 @@ const user = await getCurrentUser(Astro.cookies);
     </div>
   </div>
 </Layout>
+
+<style>
+#logout {
+  padding-left: 0;
+}
+.modal-footer .btn {
+  width: 5rem;
+}
+</style>
