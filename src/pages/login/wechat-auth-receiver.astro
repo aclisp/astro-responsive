@@ -1,0 +1,85 @@
+---
+import { DIRECTUS_ADMIN_TOKEN, DIRECTUS_DEFAULT_ROLE } from "astro:env/server";
+import { customAlphabet } from "nanoid";
+import { httpGet, httpPost, saveToken } from "../../libs/directus-transport";
+import { logDebug } from "../../libs/logger";
+
+const module = "[wechat-auth-receiver]";
+const params = Astro.url.searchParams;
+const code = params.get("code");
+const state = params.get("state");
+logDebug(`${module} code=${code} state=${state}`);
+if (!code) {
+	throw new Error("There is no code");
+}
+
+const outParams = new URLSearchParams({
+	appid: "wxd2f6261bc7b03b64",
+	secret: "60f5e88fc44cdd22a5c5fdc4ad4861df",
+	code,
+	grant_type: "authorization_code",
+});
+const res = await fetch(
+	`https://api.weixin.qq.com/sns/oauth2/access_token?${outParams}`,
+);
+if (!res.ok) {
+	const err = await res.text();
+	throw new Error(`Can not get /sns/oauth2/access_token: ${err}`);
+}
+const { openid, unionid, scope, is_snapshotuser } = await res.json();
+logDebug(
+	`${module} openid=${openid} unionid=${unionid} scope=${scope} is_snapshotuser=${is_snapshotuser}`,
+);
+
+const nanoid = customAlphabet(
+	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+	10,
+);
+const email = `${nanoid()}@wechat.cn`;
+const password = nanoid();
+const userPayload = {
+	provider: "default",
+	first_name: "",
+	email,
+	password,
+	external_identifier: openid,
+	role: DIRECTUS_DEFAULT_ROLE,
+};
+const users = await httpGet("/users", {
+	accessToken: DIRECTUS_ADMIN_TOKEN,
+	params: new URLSearchParams({
+		fields: "id,first_name,role",
+		filter: JSON.stringify({ external_identifier: { _eq: openid } }),
+	}),
+});
+if (!users.error && users.data.length > 0) {
+	const user = users.data[0];
+	await httpPost(
+		`/users/${user.id}`,
+		{
+			...userPayload,
+			first_name: user.first_name || userPayload.first_name,
+			role: user.role || userPayload.role,
+		},
+		{
+			method: "PATCH",
+			accessToken: DIRECTUS_ADMIN_TOKEN,
+		},
+	);
+} else {
+	await httpPost("/users", userPayload, {
+		accessToken: DIRECTUS_ADMIN_TOKEN,
+	});
+}
+
+const login = await httpPost(
+	"/auth/login",
+	{ email, password, mode: "json" },
+	{ noAuthorizationHeader: true, accessToken: null },
+);
+if (!login.error) {
+	await saveToken(Astro.cookies, login.data);
+	return Astro.redirect("/");
+}
+throw new Error(`Login failure: ${login.message}`);
+---

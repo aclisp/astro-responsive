@@ -1,0 +1,19 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+	title: string;
+	justifyContent?: string;
+	alignItems?: string;
+}
+
+const { title, justifyContent = "center", alignItems = "center" } = Astro.props;
+---
+
+<Layout title={title}>
+    <div class="container d-flex flex-column min-h-screen">
+        <div class:list={["flex-grow-1 d-flex flex-column", `justify-content-${justifyContent}`, `align-items-${alignItems}`]}>
+            <slot />
+        </div>
+    </div>
+</Layout>
