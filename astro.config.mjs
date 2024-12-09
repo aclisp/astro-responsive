@@ -59,6 +59,8 @@ export default defineConfig({
 		},
 	},
 
+	site: "https://m.dancingcat.top",
+
 	server: {
 		host: true,
 	},
