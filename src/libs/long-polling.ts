@@ -10,7 +10,7 @@ function prefix(): string {
 const onResponse = async (res: Response) => {
 	const json: PollingResult = await res.json();
 	console.info(
-		`${prefix()} fetch res: ${json.code} ${json.data ? JSON.stringify(json.data) : "<NIL>"}`,
+		`${prefix()} fetch res: ${json.code} ${json.data ? JSON.stringify(json.data) : ""}`,
 	);
 	startFetch();
 };

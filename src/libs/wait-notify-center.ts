@@ -3,5 +3,5 @@ export type PollingResult = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	data?: any;
 };
-export type Resolve<T> = (value: T | PromiseLike<T>) => void;
+export type Resolve<T> = (value: T) => void;
 export const waitNotifyCenter = new Set<Resolve<PollingResult>>();

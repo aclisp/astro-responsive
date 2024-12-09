@@ -18,7 +18,8 @@ export const GET: APIRoute = async ({ request }) => {
 		const res = await promise;
 		return new Response(JSON.stringify(res));
 	} catch (err) {
-		return new Response(String(err), { status: 500 });
+		const res: PollingResult = { code: "TRY_AGAIN", data: err };
+		return new Response(JSON.stringify(res), { status: 500 });
 	} finally {
 		clearTimeout(timeout);
 		waitNotifyCenter.delete(resolve);
