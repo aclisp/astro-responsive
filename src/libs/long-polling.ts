@@ -10,13 +10,13 @@ function prefix(): string {
 const onResponse = async (res: Response) => {
 	const json: PollingResult = await res.json();
 	console.info(
-		`${prefix()} fetch res: ${json.code} ${json.data ? JSON.stringify(json.data) : ""}`,
+		`${prefix()} fetch: ${json.code} ${json.data ? JSON.stringify(json.data) : ""}`,
 	);
 	startFetch();
 };
 
 const onError = (err: unknown) => {
-	console.error(`${prefix()} fetch err: ${String(err)}`);
+	console.error(`${prefix()} fetch: ${String(err)}`);
 };
 
 const startFetch = () => {
