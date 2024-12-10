@@ -3,7 +3,7 @@ import { defineConfig, envField } from "astro/config";
 
 import vue from "@astrojs/vue";
 
-import cloudflare from "@astrojs/cloudflare";
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
@@ -68,7 +68,9 @@ export default defineConfig({
 		checkOrigin: false,
 	},
 
-	adapter: cloudflare(),
+	adapter: node({
+		mode: "standalone",
+	}),
 
 	integrations: [vue()],
 });

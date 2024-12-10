@@ -8,7 +8,7 @@ export const ALL: APIRoute = async (ctx) => {
 		return new Response(null, { status: 400 });
 	}
 
-	const { method, body } = ctx.request;
+	const { method, body: requestBody } = ctx.request;
 	let token: string;
 	try {
 		token = await getAccessToken(ctx.cookies);
@@ -23,11 +23,18 @@ export const ALL: APIRoute = async (ctx) => {
 	if (params.size > 0) {
 		url += `?${params}`;
 	}
-	const headers: Record<string, string> = {
+	const requestHeaders: Record<string, string> = {
 		Authorization: `Bearer ${token}`,
 	};
 	if (method === "POST" || method === "PATCH" || method === "PUT") {
-		headers["Content-Type"] = "application/json";
+		requestHeaders["Content-Type"] = "application/json";
 	}
-	return fetch(url, { method, body, headers });
+	// The headers are immutable if the response is received from a fetch() call.
+	// So we have to create a new Response that could be appended with a `Set-Cookie` header.
+	const { body, status, statusText, headers } = await fetch(url, {
+		method,
+		body: requestBody,
+		headers: requestHeaders,
+	});
+	return new Response(body, { status, statusText, headers });
 };

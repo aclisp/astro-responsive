@@ -5,7 +5,7 @@ import {
 	waitNotifyCenter,
 } from "../../libs/wait-notify-center";
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async () => {
 	const { promise, teardown } = setup(waitNotifyCenter);
 	let res: PollingResult;
 	try {
@@ -26,7 +26,7 @@ function setup<R extends Registry<Resolve<PollingResult>>>(
 	registry: R,
 ): { promise: Promise<PollingResult>; teardown: () => void } {
 	let resolve: Resolve<PollingResult> = () => {};
-	const promise = new Promise<PollingResult>((res, rej) => {
+	const promise = new Promise<PollingResult>((res) => {
 		resolve = res;
 	});
 	registry.add(resolve);
