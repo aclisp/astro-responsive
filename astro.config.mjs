@@ -1,9 +1,9 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
 
-import node from "@astrojs/node";
-
 import vue from "@astrojs/vue";
+
+import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
@@ -59,8 +59,6 @@ export default defineConfig({
 		},
 	},
 
-	site: "https://m.dancingcat.top",
-
 	server: {
 		host: true,
 	},
@@ -70,9 +68,7 @@ export default defineConfig({
 		checkOrigin: false,
 	},
 
-	adapter: node({
-		mode: "standalone",
-	}),
+	adapter: cloudflare(),
 
 	integrations: [vue()],
 });
