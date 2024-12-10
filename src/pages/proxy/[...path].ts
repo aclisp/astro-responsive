@@ -1,21 +1,32 @@
 import type { APIRoute } from "astro";
 import { makeDirectusError } from "../../libs/directus-error";
 import { directusHost, getAccessToken } from "../../libs/directus-transport";
+import { logDebug, logInfo } from "../../libs/logger";
 
 export const ALL: APIRoute = async (ctx) => {
+	const t0 = performance.now();
 	const { path } = ctx.params;
+	const { method, body: requestBody } = ctx.request;
+	logDebug(`${method} /${path}`);
 	if (!path) {
-		return new Response(null, { status: 400 });
+		const status = 400;
+		logInfo(
+			`${method} /${path} ${status} ${(performance.now() - t0).toFixed(0)}ms`,
+		);
+		return new Response(null, { status });
 	}
 
-	const { method, body: requestBody } = ctx.request;
 	let token: string;
 	try {
 		token = await getAccessToken(ctx.cookies);
 	} catch (err) {
+		const status = 401;
+		logInfo(
+			`${method} /${path} ${status} ${(performance.now() - t0).toFixed(0)}ms`,
+		);
 		return new Response(
 			JSON.stringify(makeDirectusError("UNAUTHORIZED", String(err))),
-			{ status: 401 },
+			{ status },
 		);
 	}
 	let url = `${directusHost}/${path}`;
@@ -36,5 +47,8 @@ export const ALL: APIRoute = async (ctx) => {
 		body: requestBody,
 		headers: requestHeaders,
 	});
+	logInfo(
+		`${method} /${path} ${status} ${(performance.now() - t0).toFixed(0)}ms (${headers.get("X-Request-ID")})`,
+	);
 	return new Response(body, { status, statusText, headers });
 };
