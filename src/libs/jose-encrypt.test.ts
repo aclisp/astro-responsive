@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { joseEncrypt, joseDecrypt } from "./jose-encrypt";
+import { joseDecrypt, joseEncrypt } from "./jose-encrypt";
 
 test("jose-encrypt", async () => {
 	const text = "123456";
