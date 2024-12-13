@@ -43,11 +43,10 @@ export default defineConfig({
 				access: "public",
 				optional: true,
 			}),
-			PUBLIC_REGISTER_URL: envField.string({
-				context: "client",
+			WECHAT_OFFIACCOUNT_LOGIN_REDIRECT_URI: envField.string({
+				context: "server",
 				access: "public",
-				default: "http://localhost:8055/admin/register",
-				url: true,
+				optional: true,
 			}),
 			PUBLIC_GOOGLE_CLIENT_ID: envField.string({
 				context: "client",
@@ -55,6 +54,12 @@ export default defineConfig({
 				default:
 					"626049048609-04djl2h2j73jhtpvmlj0mejqqdlfni71.apps.googleusercontent.com",
 				optional: true,
+			}),
+			SIGNUP_VERIFICATION_URL: envField.string({
+				context: "server",
+				access: "public",
+				url: true,
+				optional: false,
 			}),
 		},
 	},

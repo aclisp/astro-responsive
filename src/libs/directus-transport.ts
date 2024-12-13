@@ -311,8 +311,17 @@ function jwtDecode(token: string) {
 }
 
 async function failure(res: Response): Promise<HttpResponse> {
-	const error = await res.json();
-	const message = directusErrorMessage(error);
+	let error: unknown;
+	let message: string | undefined;
+
+	const contentType = res.headers.get("Content-Type");
+	if (contentType?.includes("application/json")) {
+		error = await res.json();
+		message = directusErrorMessage(error);
+	} else {
+		message = await res.text();
+	}
+
 	return {
 		message: message || `${res.status} ${res.statusText}`,
 		error: error || true,
@@ -335,17 +344,22 @@ async function success(
 		};
 	}
 
-	const json = await res.json();
-
 	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
 	let data;
-	if (mapResponse) {
-		data = mapResponse(json);
-	} else if (typeof json === "object" && json && "data" in json) {
-		//data = Array.isArray(json.data) ? json : json.data;
-		data = json.data;
+
+	const contentType = res.headers.get("Content-Type");
+	if (contentType?.includes("application/json")) {
+		const json = await res.json();
+		if (mapResponse) {
+			data = mapResponse(json);
+		} else if (typeof json === "object" && json && "data" in json) {
+			//data = Array.isArray(json.data) ? json : json.data;
+			data = json.data;
+		} else {
+			data = json;
+		}
 	} else {
-		data = json;
+		data = await res.text();
 	}
 
 	return {

@@ -1,0 +1,46 @@
+---
+import { SIGNUP_VERIFICATION_URL } from "astro:env/server";
+import Layout from "../layouts/Layout.astro";
+import { httpPost } from "../libs/directus-transport";
+
+const errors = { email: "", submit: "" };
+if (Astro.request.method === "POST") {
+	const data = await Astro.request.formData();
+	const email = data.get("email") as string;
+	const password = data.get("password") as string;
+	const res = await httpPost(
+		"/users/register",
+		{ email, password, verification_url: SIGNUP_VERIFICATION_URL },
+		{ noAuthorizationHeader: true, accessToken: null },
+	);
+	if (!res.error) {
+		return Astro.redirect("/signup/success");
+	}
+	errors.submit += res.message;
+}
+---
+<Layout title="Signup Form">
+    <div class="d-flex justify-content-center align-items-center h-screen">
+        <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+            <h3 class="text-center mb-4">Sign up</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input required type="email" class="form-control" name="email" id="email" placeholder="Enter your email" autocomplete="username">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input required type="password" class="form-control" name="password" id="password" placeholder="Set your password" autocomplete="current-password">
+                  </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Sign up</button>
+                    { errors.submit ?
+                        <div class="form-text text-danger">{errors.submit}</div>
+                      : <div class="form-text">Already have an account?
+                            <a href="/login">Log In</a>
+                        </div> }
+                </div>
+            </form>
+        </div>
+    </div>
+</Layout>

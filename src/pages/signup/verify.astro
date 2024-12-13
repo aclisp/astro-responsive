@@ -1,0 +1,29 @@
+---
+import LayoutFlex from "../../layouts/LayoutFlex.astro";
+import { httpGet } from "../../libs/directus-transport";
+
+const token = Astro.url.searchParams.get("token");
+if (!token) {
+	throw new Error("There is no token");
+}
+const res = await httpGet("/users/register/verify-email", {
+	noAuthorizationHeader: true,
+	params: new URLSearchParams({ token }),
+});
+if (res.error) {
+	throw new Error("Can not verify your email");
+}
+---
+
+<LayoutFlex title="Sign up success">
+    <p>You just verified your email.</p>
+    <p class="continue-login">Now you can continue <a href="/login">login</a> with your email and password.</p>
+</LayoutFlex>
+
+<style>
+    .continue-login {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+</style>
