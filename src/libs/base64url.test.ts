@@ -8,5 +8,5 @@ test("decodeBase64Url", async () => {
 	expect(encoded.length).toBe(43);
 
 	const decoded = decodeBase64Url(encoded);
-	expect(secret.length).toBe(32);
+	expect(decoded.length).toBe(32);
 });
