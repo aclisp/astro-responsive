@@ -46,6 +46,7 @@ export default defineConfig({
 			WECHAT_OFFIACCOUNT_LOGIN_REDIRECT_URI: envField.string({
 				context: "server",
 				access: "public",
+				url: true,
 				optional: true,
 			}),
 			PUBLIC_GOOGLE_CLIENT_ID: envField.string({
