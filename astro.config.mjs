@@ -61,6 +61,12 @@ export default defineConfig({
 				url: true,
 				optional: false,
 			}),
+			PASSWORD_RESET_URL: envField.string({
+				context: "server",
+				access: "public",
+				url: true,
+				optional: false,
+			}),
 		},
 	},
 

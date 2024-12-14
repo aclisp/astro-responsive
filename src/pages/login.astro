@@ -66,9 +66,12 @@ const enableSignInWithGoogle = false;
           }
           { errors.submit ?
             <div class="form-text text-danger">{errors.submit}</div>
-          : <div class="form-text">Don't have an account?
+          : <><div class="form-text">Don't have an account?
               <a href="/signup">Sign up now</a>
-            </div> }
+            </div>
+            <div class="form-text">Forget your password?
+              <a href="/reset-password">Reset password</a>
+            </div></> }
         </div>
       </form>
     </div>

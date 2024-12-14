@@ -1,0 +1,42 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { httpPost } from "../../libs/directus-transport";
+
+const errors = { password: "", submit: "" };
+let token = "";
+if (Astro.request.method === "GET") {
+	token = Astro.url.searchParams.get("token") ?? "";
+} else {
+	const data = await Astro.request.formData();
+	token = data.get("token") as string;
+	const password = data.get("password") as string;
+	const res = await httpPost(
+		"/auth/password/reset",
+		{ token, password },
+		{ noAuthorizationHeader: true, accessToken: null },
+	);
+	if (!res.error) {
+		return Astro.redirect("/reset-password/verify-success");
+	}
+	errors.submit += res.message;
+}
+---
+
+<Layout title="Reset Form">
+    <div class="d-flex justify-content-center align-items-center h-screen">
+        <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+            <h3 class="text-center mb-4">Reset Password</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input required type="password" class="form-control" name="password" id="password" placeholder="Enter your new password" autocomplete="current-password">
+                </div>
+                <input type="hidden" name="token" value={token}>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Reset</button>
+                    { errors.submit && <div class="form-text text-danger">{errors.submit}</div>}
+                </div>
+            </form>
+        </div>
+    </div>
+</Layout>
