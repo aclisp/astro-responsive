@@ -3,7 +3,7 @@ import { defineConfig, envField } from "astro/config";
 
 import vue from "@astrojs/vue";
 
-import node from "@astrojs/node";
+import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
@@ -52,8 +52,12 @@ export default defineConfig({
 			PUBLIC_GOOGLE_CLIENT_ID: envField.string({
 				context: "client",
 				access: "public",
-				default:
-					"626049048609-04djl2h2j73jhtpvmlj0mejqqdlfni71.apps.googleusercontent.com",
+				optional: true,
+			}),
+			PUBLIC_GOOGLE_LOGIN_REDIRECT_URI: envField.string({
+				context: "client",
+				access: "public",
+				url: true,
 				optional: true,
 			}),
 			SIGNUP_VERIFICATION_URL: envField.string({
@@ -75,14 +79,20 @@ export default defineConfig({
 		host: true,
 	},
 
-	output: "server",
 	security: {
 		checkOrigin: false,
 	},
 
-	adapter: node({
-		mode: "standalone",
-	}),
-
 	integrations: [vue()],
+
+	adapter: cloudflare(),
+
+	output: "server",
+
+	vite: {
+		build: {
+			// Meaningful error messages
+			minify: false,
+		},
+	},
 });

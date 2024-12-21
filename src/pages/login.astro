@@ -1,5 +1,8 @@
 ---
-import { PUBLIC_GOOGLE_CLIENT_ID } from "astro:env/client";
+import {
+	PUBLIC_GOOGLE_CLIENT_ID,
+	PUBLIC_GOOGLE_LOGIN_REDIRECT_URI,
+} from "astro:env/client";
 import Layout from "../layouts/Layout.astro";
 import { httpPost, saveToken } from "../libs/directus-transport";
 
@@ -26,7 +29,7 @@ if (Astro.request.method === "POST") {
 	}
 }
 
-const enableSignInWithGoogle = false;
+const enableSignInWithGoogle = true;
 ---
 
 <Layout title="Login Form">
@@ -36,7 +39,7 @@ const enableSignInWithGoogle = false;
   { enableSignInWithGoogle &&
     <div id="g_id_onload"
       data-client_id={PUBLIC_GOOGLE_CLIENT_ID}
-      data-login_uri="http://localhost:4321/login/google-auth-receiver"
+      data-login_uri={PUBLIC_GOOGLE_LOGIN_REDIRECT_URI}
       data-auto_prompt="false">
     </div>
   }
